@@ -1,0 +1,76 @@
+---
+import type { ComponentProps } from "astro/types";
+import { getCollection } from "astro:content";
+import Section from "@/components/wrapper/Section.astro";
+import Marquee from "@/components/interactive/Marquee.astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom"
+> & {
+  /** Line above the strip. */
+  heading?: string;
+};
+
+const {
+  render = true,
+  theme,
+  paddingTop = "none",
+  paddingBottom = "small",
+  heading = "Trusted by fast-moving teams at",
+  ...rest
+} = Astro.props;
+
+const logos = (await getCollection("logos")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+
+/* Enough repeats that the set is wider than the strip at tight spacing. Only
+   the first run is read out; the rest are decoration. */
+const REPEATS = 3;
+---
+
+{render && logos.length > 0 && (
+  <Section
+    theme={theme}
+    paddingTop={paddingTop}
+    paddingBottom={paddingBottom}
+    containerClass="logo-marquee_wrap"
+    {...rest}
+  >
+    <p class="logo-marquee_heading text-style-label text-color-2">{heading}</p>
+    <Marquee label={heading} controls={false}>
+      {Array.from({ length: REPEATS }, (_, run) =>
+        logos.map((logo) => (
+          <span class="logo-marquee_logo" aria-hidden={run > 0 ? "true" : undefined}>
+            {logo.data.name}
+          </span>
+        )),
+      )}
+    </Marquee>
+  </Section>
+)}
+
+<style is:global>
+  @layer components {
+    .logo-marquee_wrap {
+      align-items: center;
+      gap: var(--space-5);
+    }
+
+    .logo-marquee_heading {
+      --_margin-top: 0;
+      --_margin-bottom: 0;
+      text-align: center;
+    }
+
+    .logo-marquee_logo {
+      font-size: 1.5rem;
+      font-weight: var(--primary-bold);
+      letter-spacing: var(--letter-spacing-snug);
+      line-height: var(--line-height-large);
+      color: color-mix(in lab, var(--text) 30%, transparent);
+      white-space: nowrap;
+    }
+  }
+</style>

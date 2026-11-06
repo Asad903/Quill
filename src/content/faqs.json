@@ -1,0 +1,32 @@
+[
+  {
+    "id": "q1",
+    "order": 1,
+    "question": "Which models does Quill support?",
+    "answer": "Quill works with the leading models from Anthropic, OpenAI, Google, and open-source providers. Pick a model per step, and swap it later without rebuilding your agent."
+  },
+  {
+    "id": "q2",
+    "order": 2,
+    "question": "Is my data used for training?",
+    "answer": "Never. Your data stays yours — it's isolated per workspace, encrypted at rest, and never used to train shared models. Enterprise plans add a zero-retention option."
+  },
+  {
+    "id": "q3",
+    "order": 3,
+    "question": "Can I self-host or use my own keys?",
+    "answer": "Yes. Bring your own model API keys on any plan. Self-hosted and dedicated deployments are available on Enterprise."
+  },
+  {
+    "id": "q4",
+    "order": 4,
+    "question": "How does billing work for runs?",
+    "answer": "Each plan includes a monthly run allowance. A run is one full execution of an agent, however many steps it takes. Go over and you're billed per additional run — never cut off mid-job."
+  },
+  {
+    "id": "q5",
+    "order": 5,
+    "question": "Do you offer a startup discount?",
+    "answer": "Yes. Early-stage startups can get 50% off Pro for their first year. Reach out and we'll get you set up."
+  }
+]

@@ -1,0 +1,151 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Person = { name: string; role: string };
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** The featured quote. Supports inline markup; wrap a highlight in `<em>`. */
+  featured: { quote: string } & Person;
+  /** Smaller supporting quotes. */
+  quotes: ({ quote: string } & Person)[];
+};
+
+const { render = true, featured, quotes, class: className, ...rest } = Astro.props;
+
+const initials = (name: string) =>
+  name
+    .split(" ")
+    .map((part) => part[0])
+    .join("");
+---
+
+{render && (
+  <div class:list={["testimonials_wrap", className]} {...rest}>
+    <figure class="testimonials_featured theme-dark">
+      <blockquote class="testimonials_featured_quote text-style-h3">
+        <Fragment set:html={`“${featured.quote}”`} />
+      </blockquote>
+      <figcaption class="testimonials_person">
+        <span class="testimonials_avatar featured" aria-hidden="true">
+          {initials(featured.name)}
+        </span>
+        <span class="testimonials_person_text">
+          <span class="testimonials_name">{featured.name}</span>
+          <span class="testimonials_role">{featured.role}</span>
+        </span>
+      </figcaption>
+    </figure>
+    <div class="testimonials_side">
+      {quotes.map((item) => (
+        <figure class="testimonials_card">
+          <blockquote class="testimonials_quote">“{item.quote}”</blockquote>
+          <figcaption class="testimonials_person">
+            <span class="testimonials_avatar" aria-hidden="true">
+              {initials(item.name)}
+            </span>
+            <span class="testimonials_person_text">
+              <span class="testimonials_name">{item.name}</span>
+              <span class="testimonials_role">{item.role}</span>
+            </span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+)}
+
+<style is:global>
+  @layer components {
+    .testimonials_wrap {
+      display: grid;
+      gap: var(--space-4);
+      width: 100%;
+      @media (width >= 64rem) {
+        grid-template-columns: 1.4fr 1fr;
+      }
+    }
+
+    .testimonials_featured {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-6);
+      padding: var(--space-6);
+      border-radius: var(--radius-main);
+    }
+
+    .testimonials_featured_quote {
+      --_margin-top: 0;
+      --_margin-bottom: 0;
+      font-weight: var(--primary-medium);
+      line-height: var(--line-height-large);
+      & em {
+        font-style: normal;
+        color: var(--brand-500);
+      }
+    }
+
+    .testimonials_side {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .testimonials_card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      border: var(--border-width) solid var(--background-3);
+      border-radius: var(--radius-main);
+    }
+
+    .testimonials_quote {
+      font-size: var(--text-large);
+      line-height: var(--line-height-large);
+    }
+
+    .testimonials_person {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .testimonials_avatar {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 2.5rem;
+      aspect-ratio: 1;
+      border-radius: var(--radius-round);
+      background-color: var(--text);
+      color: var(--background);
+      font-size: 0.9375rem;
+      font-weight: var(--primary-bold);
+      &.featured {
+        width: 2.875rem;
+        background-color: var(--brand-500);
+        color: var(--brand-text);
+        font-size: 1.0625rem;
+      }
+    }
+
+    .testimonials_person_text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .testimonials_name {
+      font-weight: var(--primary-semibold);
+    }
+
+    .testimonials_role {
+      font-size: var(--text-small);
+      color: var(--text-2);
+    }
+  }
+</style>

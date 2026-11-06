@@ -1,0 +1,68 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"dl"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Stats to show. Set `accent` to color the value. */
+  stats: { value: string; label: string; accent?: boolean }[];
+};
+
+const { render = true, stats, class: className, ...rest } = Astro.props;
+---
+
+{render && stats.length > 0 && (
+  <dl class:list={["stats-bar_wrap", className]} {...rest}>
+    {stats.map((stat) => (
+      <div class="stats-bar_item">
+        <dd class:list={["stats-bar_value", stat.accent && "accent"]}>
+          {stat.value}
+        </dd>
+        <dt class="stats-bar_label">{stat.label}</dt>
+      </div>
+    ))}
+  </dl>
+)}
+
+<style is:global>
+  @layer components {
+    .stats-bar_wrap {
+      display: grid;
+      grid-template-columns: repeat(2, auto);
+      justify-content: space-between;
+      gap: var(--space-6);
+      width: 100%;
+      @media (width >= 64rem) {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .stats-bar_item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      @media (width >= 64rem) {
+        & + & {
+          padding-inline-start: var(--space-8);
+          border-inline-start: var(--border-width) solid var(--background-3);
+        }
+      }
+    }
+
+    .stats-bar_value {
+      font-size: clamp(2.5rem, 4.4vw, 4rem);
+      font-weight: var(--primary-bold);
+      letter-spacing: var(--letter-spacing-snug);
+      line-height: var(--line-height-small);
+      &.accent {
+        color: var(--brand-500);
+      }
+    }
+
+    .stats-bar_label {
+      font-size: var(--text-small);
+      color: var(--text-2);
+    }
+  }
+</style>

@@ -1,0 +1,42 @@
+---
+import type { ComponentProps } from "astro/types";
+import { getCollection } from "astro:content";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Accordion from "@/components/interactive/Accordion.astro";
+import AccordionItem from "@/components/interactive/AccordionItem.astro";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom" | "id"
+>;
+
+const { render = true, id = "faq", ...rest } = Astro.props;
+
+const faqs = (await getCollection("faqs")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+{render && faqs.length > 0 && (
+  <Section id={id} {...rest}>
+    <ContentWrapper variant="columns" column1Class="align-self-start">
+      <Eyebrow variant="label">FAQ</Eyebrow>
+      <Heading tag="h2" variant="h2">Questions, answered</Heading>
+      <Paragraph class="text-color-2" maxWidth={32}>
+        Still curious? Reach the team at
+        <a href="mailto:hello@quill.ai">hello@quill.ai</a>.
+      </Paragraph>
+      <Accordion slot="column2" openFirst={false}>
+        {faqs.map(({ data: faq }) => (
+          <AccordionItem heading={faq.question}>
+            <p>{faq.answer}</p>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </ContentWrapper>
+  </Section>
+)}

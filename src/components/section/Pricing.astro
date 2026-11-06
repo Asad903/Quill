@@ -1,0 +1,181 @@
+---
+import type { ComponentProps } from "astro/types";
+import { getCollection } from "astro:content";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import Icon from "@/components/media/Icon.astro";
+import check from "@/assets/icons/check.svg";
+
+type Props = Pick<
+  ComponentProps<typeof Section>,
+  "render" | "theme" | "paddingTop" | "paddingBottom" | "id"
+>;
+
+const {
+  render = true,
+  theme = "light",
+  paddingTop,
+  paddingBottom,
+  id = "pricing",
+  ...rest
+} = Astro.props;
+
+const tiers = (await getCollection("pricing")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+{render && tiers.length > 0 && (
+  <Section
+    id={id}
+    theme={theme}
+    paddingTop={paddingTop}
+    paddingBottom={paddingBottom}
+    class="surface"
+    gap="7"
+    {...rest}
+  >
+    <ContentWrapper centered>
+      <Eyebrow variant="label">Pricing</Eyebrow>
+      <Heading tag="h2" variant="h1">Simple pricing that scales</Heading>
+      <Paragraph variant="large" class="text-color-2" maxWidth={40}>
+        Start free. Upgrade when your agents are doing real work. Cancel
+        anytime.
+      </Paragraph>
+    </ContentWrapper>
+    <ul class="pricing_list">
+      {tiers.map(({ data: tier }) => (
+        <li class:list={["pricing_tier", tier.featured && "featured theme-dark"]}>
+          {tier.badge && <span class="pricing_badge">{tier.badge}</span>}
+          <div class="pricing_head">
+            <Heading tag="h3" variant="h6" class="pricing_name">{tier.name}</Heading>
+            <p class="pricing_description text-color-2">{tier.description}</p>
+          </div>
+          <p class="pricing_price">
+            <span class="pricing_amount">{tier.price}</span>
+            {tier.period && <span class="pricing_period text-color-2">{tier.period}</span>}
+          </p>
+          <Button
+            element="link"
+            href={tier.href}
+            emphasis={tier.featured ? "primary" : "secondary"}
+            class="pricing_cta"
+          >
+            {tier.cta}
+          </Button>
+          <ul class="pricing_features">
+            {tier.features.map((feature) => (
+              <li class="pricing_feature">
+                <Icon src={check} variant="small" />
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ul>
+  </Section>
+)}
+
+<style is:global>
+  @layer components {
+    .pricing_list {
+      display: grid;
+      align-items: start;
+      gap: var(--space-4);
+      width: 100%;
+      @media (width >= 64rem) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .pricing_tier {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      padding: var(--space-5);
+      border: var(--border-width) solid var(--background-3);
+      border-radius: var(--radius-main);
+      background-color: var(--light-100);
+      color: var(--dark-900);
+
+      &.featured {
+        border-color: transparent;
+        background-color: var(--background);
+        color: var(--text);
+        box-shadow: 0 1.5rem 3.125rem -1.125rem
+          color-mix(in lab, var(--dark-900) 35%, transparent);
+      }
+    }
+
+    .pricing_badge {
+      position: absolute;
+      inset-block-start: 1.25rem;
+      inset-inline-end: 1.25rem;
+      padding: 0.3125rem 0.625rem;
+      border-radius: var(--radius-round);
+      background-color: var(--brand-500);
+      color: var(--brand-text);
+      font-family: var(--mono-family);
+      font-size: 0.6875rem;
+      font-weight: var(--primary-semibold);
+      letter-spacing: var(--letter-spacing-wide);
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+
+    .pricing_head {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      & > * {
+        margin: 0;
+      }
+    }
+
+    .pricing_name {
+      font-weight: var(--primary-semibold);
+    }
+
+    .pricing_description {
+      font-size: var(--text-small);
+    }
+
+    .pricing_price {
+      display: flex;
+      align-items: baseline;
+      gap: 0.25rem;
+    }
+
+    .pricing_amount {
+      font-size: 3rem;
+      font-weight: var(--primary-bold);
+      letter-spacing: var(--letter-spacing-snug);
+      line-height: 1.2;
+    }
+
+    .pricing_cta {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .pricing_features {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-top: var(--space-1);
+    }
+
+    .pricing_feature {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-small);
+    }
+  }
+</style>

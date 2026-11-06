@@ -1,0 +1,865 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+};
+
+const { render = true, class: className, ...rest } = Astro.props;
+
+const tabs = [
+  { id: "agents", label: "Agents" },
+  { id: "workflows", label: "Workflows" },
+  { id: "knowledge", label: "Knowledge" },
+  { id: "analytics", label: "Analytics" },
+];
+
+const agents = [
+  { name: "SEO Writer", text: "Drafts ranked articles from a keyword.", runs: 128 },
+  { name: "Support Triage", text: "Classifies and replies to tickets.", runs: 342 },
+];
+
+const outputs = [
+  "Generating outline for “Best AI tools for marketers” — 8 sections, pulling from 4 connected sources",
+  "Drafting section 3 of 8: “Choosing a stack that fits your team” — citing 6 sources",
+  "Eval passed: grounding 98%, tone match 96%. Draft ready to publish",
+];
+
+const steps = ["Outline", "Draft", "Eval"];
+
+const sources = [
+  { name: "Notion workspace", meta: "1,284 pages", progress: 100 },
+  { name: "Help center docs", meta: "312 articles", progress: 62, live: true },
+  { name: "Postgres · prod-readonly", meta: "48 tables", progress: 100 },
+];
+
+const nodes = [
+  { kind: "Trigger", name: "Webhook" },
+  { kind: "Agent", name: "SEO Writer" },
+  { kind: "Action", name: "Publish to CMS" },
+];
+
+const bars = [42, 55, 48, 66, 58, 72, 64, 80, 70, 86, 78, 92];
+---
+
+{render && (
+  <div
+    class:list={["hero-mockup_wrap", className]}
+    role="region"
+    aria-label="Quill product demo"
+    data-mockup
+    {...rest}
+  >
+    <div class="hero-mockup_bar">
+      <span class="hero-mockup_dot"></span>
+      <span class="hero-mockup_dot"></span>
+      <span class="hero-mockup_dot"></span>
+      <span class="hero-mockup_url" data-url>app.quill.ai / agents</span>
+    </div>
+    <div class="hero-mockup_body">
+      <div class="hero-mockup_sidebar" role="tablist" aria-label="Workspace" aria-orientation="vertical">
+        <span class="hero-mockup_label">Workspace</span>
+        {tabs.map((tab, i) => (
+          <button
+            class:list={["hero-mockup_nav", i === 0 && "active"]}
+            type="button"
+            role="tab"
+            id={`mockup-tab-${tab.id}`}
+            aria-controls={`mockup-panel-${tab.id}`}
+            aria-selected={i === 0 ? "true" : "false"}
+            tabindex={i === 0 ? 0 : -1}
+            data-tab={tab.id}
+          >
+            <span class="hero-mockup_swatch"></span>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      <div class="hero-mockup_main">
+        {/* Agents */}
+        <section class="hero-mockup_panel" role="tabpanel" id="mockup-panel-agents" aria-labelledby="mockup-tab-agents" data-panel="agents">
+          <div class="hero-mockup_head">
+            <span class="hero-mockup_title">Content Agents</span>
+            <button class="hero-mockup_new" type="button" data-new-agent>+ New agent</button>
+          </div>
+          <div class="hero-mockup_cards" data-cards>
+            {agents.map((agent) => (
+              <div class="hero-mockup_card">
+                <p class="hero-mockup_card_title">{agent.name}</p>
+                <p class="hero-mockup_card_text">{agent.text}</p>
+                <p class="hero-mockup_card_foot">
+                  <span class="hero-mockup_status">Running</span>
+                  <span class="hero-mockup_runs"><span data-count={agent.runs}>{agent.runs}</span> runs today</span>
+                </p>
+              </div>
+            ))}
+          </div>
+          <div class="hero-mockup_output">
+            <div class="hero-mockup_output_head">
+              <span class="hero-mockup_label">Live output</span>
+              <span class="hero-mockup_steps">
+                {steps.map((step, i) => (
+                  <span class:list={["hero-mockup_step", i === 0 && "active"]} data-step>{step}</span>
+                ))}
+              </span>
+            </div>
+            <p class="hero-mockup_output_text" aria-live="off">
+              <span data-typing data-lines={JSON.stringify(outputs)}>{outputs[0]}</span><span class="hero-mockup_cursor">▍</span>
+            </p>
+            <span class="hero-mockup_progress"><span class="hero-mockup_progress_bar" data-progress></span></span>
+          </div>
+        </section>
+
+        {/* Workflows */}
+        <section class="hero-mockup_panel" role="tabpanel" id="mockup-panel-workflows" aria-labelledby="mockup-tab-workflows" data-panel="workflows" hidden>
+          <div class="hero-mockup_head">
+            <span class="hero-mockup_title">Workflows</span>
+            <button class="hero-mockup_new" type="button" data-run-workflow>▶ Run now</button>
+          </div>
+          <div class="hero-mockup_flow" data-flow>
+            {nodes.map((node, i) => (
+              <>
+                <div class="hero-mockup_node" data-node>
+                  <span class="hero-mockup_label">{node.kind}</span>
+                  <span class="hero-mockup_node_name">{node.name}</span>
+                </div>
+                {i < nodes.length - 1 && <span class="hero-mockup_link" data-link></span>}
+              </>
+            ))}
+          </div>
+          <div class="hero-mockup_output">
+            <span class="hero-mockup_label">Recent runs</span>
+            <ul class="hero-mockup_runs_list" data-history>
+              <li><span class="hero-mockup_status">Success</span><span>2 min ago</span><span>4.1s</span></li>
+              <li><span class="hero-mockup_status">Success</span><span>1 hr ago</span><span>3.8s</span></li>
+              <li><span class="hero-mockup_status">Success</span><span>3 hr ago</span><span>4.4s</span></li>
+            </ul>
+          </div>
+        </section>
+
+        {/* Knowledge */}
+        <section class="hero-mockup_panel" role="tabpanel" id="mockup-panel-knowledge" aria-labelledby="mockup-tab-knowledge" data-panel="knowledge" hidden>
+          <div class="hero-mockup_head">
+            <span class="hero-mockup_title">Knowledge</span>
+            <span class="hero-mockup_pill">3 sources</span>
+          </div>
+          <ul class="hero-mockup_sources">
+            {sources.map((source) => (
+              <li class="hero-mockup_card hero-mockup_source" data-source={source.live ? "live" : undefined}>
+                <p class="hero-mockup_card_title">{source.name}</p>
+                <p class="hero-mockup_card_text">{source.meta}</p>
+                <span class="hero-mockup_progress"><span class="hero-mockup_progress_bar" style={`width: ${source.progress}%`} data-source-bar></span></span>
+                <span class="hero-mockup_status" data-source-status>{source.progress === 100 ? "Synced" : "Indexing"}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Analytics */}
+        <section class="hero-mockup_panel" role="tabpanel" id="mockup-panel-analytics" aria-labelledby="mockup-tab-analytics" data-panel="analytics" hidden>
+          <div class="hero-mockup_head">
+            <span class="hero-mockup_title">Analytics</span>
+            <span class="hero-mockup_pill">Last 24h</span>
+          </div>
+          <div class="hero-mockup_cards three">
+            <div class="hero-mockup_card"><p class="hero-mockup_card_text">Quality</p><p class="hero-mockup_stat"><span data-stat="quality" data-base="97" data-spread="2">97</span>%</p></div>
+            <div class="hero-mockup_card"><p class="hero-mockup_card_text">Latency p50</p><p class="hero-mockup_stat"><span data-stat="latency" data-base="1.8" data-spread="0.4" data-decimals="1">1.8</span>s</p></div>
+            <div class="hero-mockup_card"><p class="hero-mockup_card_text">Cost / run</p><p class="hero-mockup_stat">$<span data-stat="cost" data-base="0.04" data-spread="0.01" data-decimals="2">0.04</span></p></div>
+          </div>
+          <div class="hero-mockup_output">
+            <span class="hero-mockup_label">Runs per hour</span>
+            <div class="hero-mockup_chart" data-chart>
+              {bars.map((h) => <span class="hero-mockup_bar_item" style={`height: ${h}%`}></span>)}
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+)}
+
+<script>
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+  const rand = (min: number, max: number) => min + Math.random() * (max - min);
+
+  for (const root of document.querySelectorAll<HTMLElement>("[data-mockup]")) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>("[data-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-panel]")];
+    const url = root.querySelector<HTMLElement>("[data-url]");
+    let live = false;
+    let touched = false;
+    let current = 0;
+
+    /* Only animate while the demo is on screen. */
+    new IntersectionObserver(([entry]) => (live = entry.isIntersecting), {
+      threshold: 0.25,
+    }).observe(root);
+
+    const motion = () => live && !reduced.matches;
+    const until = async (test: () => boolean) => {
+      while (!test()) await sleep(250);
+    };
+
+    /* Tabs */
+    const select = (index: number, focus = false) => {
+      current = index;
+      tabs.forEach((tab, i) => {
+        const on = i === index;
+        tab.classList.toggle("active", on);
+        tab.setAttribute("aria-selected", String(on));
+        tab.tabIndex = on ? 0 : -1;
+        if (on && focus) tab.focus();
+      });
+      panels.forEach((panel, i) => (panel.hidden = i !== index));
+      if (url) url.textContent = `app.quill.ai / ${tabs[index].dataset.tab}`;
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener("click", () => {
+        touched = true;
+        select(i);
+      });
+      tab.addEventListener("keydown", (event) => {
+        const step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[event.key];
+        if (!step) return;
+        event.preventDefault();
+        touched = true;
+        select((i + step + tabs.length) % tabs.length, true);
+      });
+    });
+
+    /* Walk through the tabs until the visitor takes over. */
+    (async () => {
+      while (!touched) {
+        await sleep(6500);
+        await until(() => motion() || touched);
+        if (!touched && motion()) select((current + 1) % tabs.length);
+      }
+    })();
+
+    /* Live output: types each line, then moves to the next. */
+    const typing = root.querySelector<HTMLElement>("[data-typing]");
+    const progress = root.querySelector<HTMLElement>("[data-progress]");
+    const stepChips = [...root.querySelectorAll<HTMLElement>("[data-step]")];
+    if (typing) {
+      const lines: string[] = JSON.parse(typing.dataset.lines ?? "[]");
+      const showStep = (i: number) => {
+        stepChips.forEach((chip, n) => {
+          chip.classList.toggle("active", n === i);
+          chip.classList.toggle("done", n < i);
+        });
+        if (progress) progress.style.width = `${((i + 1) / lines.length) * 100}%`;
+      };
+      showStep(0);
+      (async () => {
+        for (let i = 0; ; i = (i + 1) % lines.length) {
+          await until(motion);
+          showStep(i);
+          typing.textContent = "";
+          for (const char of lines[i]) {
+            await until(motion);
+            typing.textContent += char;
+            await sleep(rand(14, 38));
+          }
+          await sleep(2400);
+        }
+      })();
+    }
+
+    /* Run counters on the agent cards. */
+    const counts = [...root.querySelectorAll<HTMLElement>("[data-count]")];
+    (async () => {
+      while (true) {
+        await sleep(rand(1400, 2600));
+        if (!motion()) continue;
+        const el = counts[Math.floor(Math.random() * counts.length)];
+        if (!el) continue;
+        el.textContent = String(Number(el.textContent) + Math.ceil(rand(1, 3)));
+        el.classList.remove("tick");
+        void el.offsetWidth;
+        el.classList.add("tick");
+      }
+    })();
+
+    /* New agent */
+    const extras = [
+      { name: "Research Digest", text: "Summarizes weekly competitor news." },
+      { name: "Lead Enricher", text: "Fills CRM gaps from the open web." },
+    ];
+    const cards = root.querySelector<HTMLElement>("[data-cards]");
+    const add = root.querySelector<HTMLButtonElement>("[data-new-agent]");
+    add?.addEventListener("click", () => {
+      const extra = extras.shift();
+      if (!extra || !cards) return;
+      touched = true;
+      const card = document.createElement("div");
+      card.className = "hero-mockup_card enter";
+      card.innerHTML = `<p class="hero-mockup_card_title"></p><p class="hero-mockup_card_text"></p><p class="hero-mockup_card_foot"><span class="hero-mockup_status starting">Starting</span><span class="hero-mockup_runs"><span data-count>0</span> runs today</span></p>`;
+      card.querySelector(".hero-mockup_card_title")!.textContent = extra.name;
+      card.querySelector(".hero-mockup_card_text")!.textContent = extra.text;
+      cards.append(card);
+      const status = card.querySelector<HTMLElement>(".hero-mockup_status")!;
+      counts.push(card.querySelector<HTMLElement>("[data-count]")!);
+      setTimeout(() => {
+        status.textContent = "Running";
+        status.classList.remove("starting");
+      }, 1400);
+      if (!extras.length) {
+        add.disabled = true;
+        add.textContent = "All agents added";
+      }
+    });
+
+    /* Workflow run */
+    const run = root.querySelector<HTMLButtonElement>("[data-run-workflow]");
+    const nodes = [...root.querySelectorAll<HTMLElement>("[data-node]")];
+    const links = [...root.querySelectorAll<HTMLElement>("[data-link]")];
+    const history = root.querySelector<HTMLElement>("[data-history]");
+    let running = false;
+    run?.addEventListener("click", async () => {
+      if (running) return;
+      running = true;
+      touched = true;
+      run.disabled = true;
+      const started = performance.now();
+      for (let i = 0; i < nodes.length; i++) {
+        nodes[i].classList.add("active");
+        await sleep(reduced.matches ? 0 : 750);
+        nodes[i].classList.replace("active", "done");
+        links[i]?.classList.add("done");
+      }
+      const row = document.createElement("li");
+      row.className = "enter";
+      row.innerHTML = `<span class="hero-mockup_status">Success</span><span>Just now</span><span>${((performance.now() - started) / 1000).toFixed(1)}s</span>`;
+      history?.prepend(row);
+      history?.lastElementChild?.remove();
+      await sleep(1600);
+      [...nodes, ...links].forEach((el) => el.classList.remove("active", "done"));
+      run.disabled = false;
+      running = false;
+    });
+
+    /* Knowledge indexing loop */
+    const source = root.querySelector<HTMLElement>('[data-source="live"]');
+    const sourceBar = source?.querySelector<HTMLElement>("[data-source-bar]");
+    const sourceStatus = source?.querySelector<HTMLElement>("[data-source-status]");
+    if (sourceBar && sourceStatus) {
+      (async () => {
+        let value = 62;
+        while (true) {
+          await sleep(140);
+          if (!motion() || panels[current]?.dataset.panel !== "knowledge") continue;
+          value = Math.min(100, value + rand(1, 4));
+          sourceBar.style.width = `${value}%`;
+          sourceStatus.textContent = value >= 100 ? "Synced" : "Indexing";
+          if (value >= 100) {
+            await sleep(2200);
+            value = 8;
+          }
+        }
+      })();
+    }
+
+    /* Analytics */
+    const bars = [...root.querySelectorAll<HTMLElement>(".hero-mockup_bar_item")];
+    const stats = [...root.querySelectorAll<HTMLElement>("[data-stat]")];
+    (async () => {
+      while (true) {
+        await sleep(1700);
+        if (!motion() || panels[current]?.dataset.panel !== "analytics") continue;
+        bars.forEach((bar, i) => (bar.style.height = `${rand(30, 60) + (i / bars.length) * 35}%`));
+        for (const stat of stats) {
+          const base = Number(stat.dataset.base);
+          const spread = Number(stat.dataset.spread);
+          const decimals = Number(stat.dataset.decimals ?? 0);
+          stat.textContent = (base + rand(-spread, spread)).toFixed(decimals);
+        }
+      }
+    })();
+  }
+</script>
+
+<style is:global>
+  @layer components {
+    .hero-mockup_wrap {
+      width: 100%;
+      max-width: 68.75rem;
+      margin-inline: auto;
+      background-color: var(--background);
+      border: var(--border-width) solid var(--background-3);
+      border-radius: var(--radius-main);
+      box-shadow: 0 1.875rem 3.75rem -1.25rem
+        color-mix(in lab, var(--text) 18%, transparent);
+      overflow: clip;
+      text-align: start;
+      font-size: 0.875rem;
+    }
+
+    .hero-mockup_bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8125rem 1rem;
+      background-color: var(--background-2);
+      border-bottom: var(--border-width) solid var(--background-3);
+    }
+
+    .hero-mockup_dot {
+      width: 0.6875rem;
+      aspect-ratio: 1;
+      border-radius: var(--radius-round);
+      background-color: var(--background-3);
+    }
+
+    .hero-mockup_url {
+      margin-inline-start: 0.875rem;
+      font-family: var(--mono-family);
+      font-size: 0.75rem;
+      color: var(--text-2);
+    }
+
+    .hero-mockup_body {
+      display: flex;
+      flex-direction: column;
+      @media (width >= 48rem) {
+        flex-direction: row;
+        height: 31rem;
+      }
+    }
+
+    .hero-mockup_sidebar {
+      display: flex;
+      flex: none;
+      gap: 0.375rem;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      background-color: var(--background-2);
+      border-bottom: var(--border-width) solid var(--background-3);
+      @media (width >= 48rem) {
+        flex-direction: column;
+        width: 13.75rem;
+        padding: 1.25rem 1rem;
+        overflow: visible;
+        border-bottom: 0;
+        border-inline-end: var(--border-width) solid var(--background-3);
+      }
+    }
+
+    .hero-mockup_label {
+      font-family: var(--mono-family);
+      font-size: 0.6875rem;
+      letter-spacing: var(--letter-spacing-wide);
+      text-transform: uppercase;
+      color: var(--text-2);
+    }
+
+    .hero-mockup_sidebar > .hero-mockup_label {
+      display: none;
+      padding: 0.25rem 0.625rem 0.5rem;
+      @media (width >= 48rem) {
+        display: block;
+      }
+    }
+
+    .hero-mockup_nav {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      padding: 0.5625rem 0.625rem;
+      border-radius: var(--radius-small);
+      font-weight: var(--primary-medium);
+      color: var(--text-2);
+      white-space: nowrap;
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:not(.active):hover {
+          background-color: var(--background-3);
+          color: var(--text);
+        }
+      }
+      &.active {
+        background-color: var(--text);
+        color: var(--background);
+      }
+    }
+
+    .hero-mockup_swatch {
+      width: 0.875rem;
+      aspect-ratio: 1;
+      border-radius: 0.25rem;
+      background-color: var(--background-3);
+      .active > & {
+        background-color: var(--brand-500);
+      }
+    }
+
+    .hero-mockup_main {
+      flex: 1;
+      min-width: 0;
+      padding: 1.25rem;
+      overflow: clip;
+      @media (width >= 48rem) {
+        padding: 1.75rem 1.875rem;
+      }
+    }
+
+    .hero-mockup_panel {
+      display: flex;
+      flex-direction: column;
+      gap: 1.125rem;
+      animation: mockup-in 320ms var(--hover-ease);
+      &[hidden] {
+        display: none;
+      }
+    }
+
+    .hero-mockup_head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .hero-mockup_title {
+      font-size: 1.375rem;
+      font-weight: var(--primary-semibold);
+      letter-spacing: var(--letter-spacing-snug);
+    }
+
+    .hero-mockup_new {
+      padding: 0.5rem 0.875rem;
+      border-radius: var(--radius-small);
+      background-color: var(--brand-500);
+      color: var(--brand-text);
+      font-size: 0.8125rem;
+      font-weight: var(--primary-semibold);
+      white-space: nowrap;
+      transition:
+        transform var(--hover-duration) var(--hover-ease),
+        opacity var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:not(:disabled):hover {
+          transform: translateY(-0.0625rem);
+        }
+      }
+      &:active:not(:disabled) {
+        transform: translateY(0.0625rem);
+      }
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+
+    .hero-mockup_pill {
+      padding: 0.3125rem 0.625rem;
+      border: var(--border-width) solid var(--background-3);
+      border-radius: var(--radius-round);
+      font-family: var(--mono-family);
+      font-size: 0.6875rem;
+      color: var(--text-2);
+    }
+
+    .hero-mockup_cards,
+    .hero-mockup_sources {
+      display: grid;
+      gap: 1rem;
+      @media (width >= 40rem) {
+        grid-template-columns: 1fr 1fr;
+      }
+      &.three {
+        @media (width >= 40rem) {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+    }
+
+    .hero-mockup_sources {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-mockup_card,
+    .hero-mockup_output {
+      padding: 1.125rem;
+      border: var(--border-width) solid var(--background-3);
+      border-radius: 0.75rem;
+    }
+
+    .hero-mockup_card {
+      transition:
+        border-color var(--hover-duration) var(--hover-ease),
+        transform var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:hover {
+          border-color: var(--text-2);
+          transform: translateY(-0.125rem);
+        }
+      }
+      &.enter {
+        animation: mockup-in 420ms var(--hover-ease);
+      }
+    }
+
+    .hero-mockup_output {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background-color: var(--background-2);
+    }
+
+    .hero-mockup_output_head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .hero-mockup_steps {
+      display: flex;
+      gap: 0.375rem;
+    }
+
+    .hero-mockup_step {
+      padding: 0.1875rem 0.5rem;
+      border-radius: var(--radius-round);
+      font-family: var(--mono-family);
+      font-size: 0.625rem;
+      color: var(--text-2);
+      background-color: var(--background-3);
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+      &.active {
+        background-color: var(--brand-500);
+        color: var(--brand-text);
+      }
+      &.done {
+        color: var(--success);
+      }
+    }
+
+    .hero-mockup_card_title {
+      margin-bottom: 0.5rem;
+      font-weight: var(--primary-semibold);
+    }
+
+    .hero-mockup_card_text {
+      font-size: 0.8125rem;
+      color: var(--text-2);
+    }
+
+    .hero-mockup_card_foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: 0.875rem;
+    }
+
+    .hero-mockup_runs {
+      font-family: var(--mono-family);
+      font-size: 0.6875rem;
+      color: var(--text-2);
+      & .tick {
+        animation: mockup-tick 600ms var(--hover-ease);
+      }
+    }
+
+    .hero-mockup_status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-family: var(--mono-family);
+      font-size: 0.6875rem;
+      color: var(--success);
+      &::before {
+        content: "";
+        width: 0.375rem;
+        aspect-ratio: 1;
+        border-radius: var(--radius-round);
+        background-color: currentcolor;
+        animation: mockup-pulse 1800ms ease-out infinite;
+      }
+      &.starting {
+        color: var(--text-2);
+      }
+    }
+
+    .hero-mockup_output_text {
+      min-height: 3.25rem;
+      line-height: 1.6;
+    }
+
+    .hero-mockup_cursor {
+      color: var(--brand-500);
+      animation: mockup-blink 1s steps(2, start) infinite;
+    }
+
+    .hero-mockup_progress {
+      display: block;
+      height: 0.25rem;
+      border-radius: var(--radius-round);
+      background-color: var(--background-3);
+      overflow: clip;
+    }
+
+    .hero-mockup_progress_bar {
+      display: block;
+      height: 100%;
+      width: 33%;
+      border-radius: inherit;
+      background-color: var(--brand-500);
+      transition: width 600ms var(--hover-ease);
+    }
+
+    /* Workflows */
+    .hero-mockup_flow {
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 0;
+      @media (width >= 40rem) {
+        flex-direction: row;
+      }
+    }
+
+    .hero-mockup_node {
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      flex: none;
+      min-width: 8.75rem;
+      padding: 0.875rem 1rem;
+      border: var(--border-width) solid var(--background-3);
+      border-radius: 0.75rem;
+      transition:
+        border-color 300ms var(--hover-ease),
+        background-color 300ms var(--hover-ease);
+      &.active {
+        border-color: var(--brand-500);
+        background-color: var(--brand-200);
+        color: var(--dark-900);
+        & .hero-mockup_label {
+          color: var(--dark-900);
+        }
+      }
+      &.done {
+        border-color: var(--success);
+      }
+    }
+
+    .hero-mockup_node_name {
+      font-weight: var(--primary-semibold);
+    }
+
+    .hero-mockup_link {
+      flex: 1;
+      position: relative;
+      min-width: 1.5rem;
+      min-height: 1.5rem;
+      background-color: var(--background-3);
+      width: var(--border-width);
+      @media (width >= 40rem) {
+        width: auto;
+        height: var(--border-width);
+        min-height: 0;
+      }
+      &.done {
+        background-color: var(--success);
+      }
+    }
+
+    .hero-mockup_runs_list {
+      display: flex;
+      flex-direction: column;
+      & li {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 1rem;
+        padding-block: 0.5rem;
+        border-top: var(--border-width) solid var(--background-3);
+        font-size: 0.8125rem;
+        color: var(--text-2);
+        &.enter {
+          animation: mockup-in 420ms var(--hover-ease);
+        }
+      }
+    }
+
+    /* Knowledge */
+    .hero-mockup_source {
+      display: grid;
+      gap: 0.75rem;
+      & .hero-mockup_card_title {
+        margin-bottom: 0;
+      }
+    }
+
+    /* Analytics */
+    .hero-mockup_stat {
+      margin-top: 0.625rem;
+      font-size: 1.75rem;
+      font-weight: var(--primary-bold);
+      letter-spacing: var(--letter-spacing-snug);
+      line-height: 1.1;
+    }
+
+    .hero-mockup_chart {
+      display: flex;
+      align-items: end;
+      gap: 0.375rem;
+      height: 6.5rem;
+    }
+
+    .hero-mockup_bar_item {
+      flex: 1;
+      border-radius: 0.25rem 0.25rem 0 0;
+      background-color: var(--brand-500);
+      transition: height 900ms var(--hover-ease);
+      &:nth-child(odd) {
+        background-color: color-mix(in lab, var(--brand-500) 70%, var(--background));
+      }
+    }
+
+    @keyframes mockup-in {
+      from {
+        opacity: 0;
+        translate: 0 0.5rem;
+      }
+    }
+
+    @keyframes mockup-blink {
+      to {
+        visibility: hidden;
+      }
+    }
+
+    @keyframes mockup-pulse {
+      0% {
+        box-shadow: 0 0 0 0 color-mix(in lab, currentcolor 45%, transparent);
+      }
+      70%,
+      100% {
+        box-shadow: 0 0 0 0.375rem transparent;
+      }
+    }
+
+    @keyframes mockup-tick {
+      from {
+        color: var(--text);
+        scale: 1.25;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-mockup_cursor,
+      .hero-mockup_status::before {
+        animation: none;
+      }
+    }
+  }
+</style>

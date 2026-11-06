@@ -1,0 +1,55 @@
+[
+  {
+    "id": "starter",
+    "order": 1,
+    "name": "Starter",
+    "description": "For solo builders and side projects",
+    "price": "$0",
+    "period": "/mo",
+    "cta": "Get started",
+    "href": "/#faq",
+    "featured": false,
+    "features": [
+      "3 agents",
+      "1,000 runs / month",
+      "Community support",
+      "2 data sources"
+    ]
+  },
+  {
+    "id": "pro",
+    "order": 2,
+    "name": "Pro",
+    "description": "For teams shipping to production",
+    "price": "$49",
+    "period": "/mo",
+    "cta": "Start free trial",
+    "href": "/#faq",
+    "featured": true,
+    "badge": "Popular",
+    "features": [
+      "Unlimited agents",
+      "50,000 runs / month",
+      "Evals & analytics",
+      "Priority support",
+      "Unlimited data sources"
+    ]
+  },
+  {
+    "id": "enterprise",
+    "order": 3,
+    "name": "Enterprise",
+    "description": "For scale, security, and SLAs",
+    "price": "Custom",
+    "cta": "Contact sales",
+    "href": "/#faq",
+    "featured": false,
+    "features": [
+      "Everything in Pro",
+      "SSO & SCIM",
+      "Dedicated infra",
+      "99.98% uptime SLA",
+      "Solutions engineer"
+    ]
+  }
+]

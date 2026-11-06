@@ -1,0 +1,210 @@
+---
+import { SITE_NAME } from "@/consts.ts";
+
+interface Props {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+}
+
+const { render = true } = Astro.props;
+
+const columns = [
+  {
+    title: "Product",
+    links: [
+      { label: "Features", href: "/#platform" },
+      { label: "Pricing", href: "/#pricing" },
+      { label: "Changelog", href: "/#how-it-works" },
+      { label: "Docs", href: "/#platform" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { label: "About", href: "/#customers" },
+      { label: "Blog", href: "/" },
+      { label: "Careers", href: "/" },
+      { label: "Contact", href: "/#faq" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
+      { label: "Privacy", href: "/" },
+      { label: "Terms", href: "/" },
+      { label: "Security", href: "/#platform" },
+      { label: "DPA", href: "/" },
+    ],
+  },
+];
+---
+
+{render && (
+  <footer class="footer_wrap theme-dark">
+    <div class="footer_inner">
+      <div class="footer_top">
+        <div class="footer_brand">
+          <a class="footer_logo" href="/" aria-label={SITE_NAME}>
+            <span class="footer_logo_mark" aria-hidden="true"></span>
+            {SITE_NAME}
+          </a>
+          <p class="footer_tagline">
+            The AI workspace for teams that ship. Build, run, and monitor agents
+            in one place.
+          </p>
+        </div>
+        <nav class="footer_columns" aria-label="Footer">
+          {columns.map((column) => (
+            <div class="footer_column">
+              <p class="footer_heading text-style-label">{column.title}</p>
+              <ul class="footer_links">
+                {column.links.map((link) => (
+                  <li>
+                    <a class="footer_link" href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      </div>
+      <div class="footer_bottom">
+        <p class="footer_copyright text-style-label">
+          &copy; <span id="year">{new Date().getFullYear()}</span>{" "}
+          {SITE_NAME}, Inc. All rights reserved.
+        </p>
+        <p class="footer_copyright text-style-label">Made for builders.</p>
+      </div>
+    </div>
+  </footer>
+)}
+
+<script>
+  const year = document.querySelector<HTMLSpanElement>("#year");
+
+  if (year) {
+    year.textContent = new Date().getFullYear().toString();
+  }
+</script>
+
+<style is:global>
+  @layer components {
+    .footer_wrap {
+      display: flex;
+      justify-content: center;
+      padding-top: var(--section-space-small);
+      padding-bottom: var(--space-6);
+      padding-inline: var(--site-margin);
+    }
+
+    .footer_inner {
+      width: 100%;
+      max-width: var(--max-width-main);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-7);
+    }
+
+    .footer_top {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-7);
+      @media (width >= 48rem) {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    .footer_brand {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      max-width: 18.75rem;
+    }
+
+    .footer_logo {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 1.25rem;
+      font-weight: var(--primary-semibold);
+      letter-spacing: var(--letter-spacing-snug);
+    }
+
+    .footer_logo_mark {
+      display: grid;
+      place-items: center;
+      width: 1.875rem;
+      aspect-ratio: 1;
+      border-radius: 0.4375rem;
+      background-color: var(--brand-500);
+      &::after {
+        content: "";
+        width: 0.8125rem;
+        aspect-ratio: 1;
+        border-radius: var(--radius-round);
+        background-color: var(--brand-text);
+      }
+    }
+
+    .footer_tagline {
+      color: var(--text-2);
+      font-size: var(--text-small);
+    }
+
+    .footer_columns {
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      gap: var(--space-6);
+      @media (width >= 48rem) {
+        gap: var(--space-8);
+      }
+    }
+
+    .footer_column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .footer_heading {
+      --_margin-top: 0;
+      --_margin-bottom: 0;
+      color: var(--text-2);
+      font-weight: var(--primary-regular);
+    }
+
+    .footer_links {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .footer_link {
+      font-size: var(--text-small);
+      transition: color var(--hover-duration) var(--hover-ease);
+      @media (hover: hover) {
+        &:hover {
+          color: var(--brand-500);
+        }
+      }
+    }
+
+    .footer_bottom {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-2);
+      padding-top: var(--space-5);
+      border-top: var(--border-width) solid var(--background-3);
+    }
+
+    .footer_copyright {
+      --_margin-top: 0;
+      --_margin-bottom: 0;
+      color: var(--text-2);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+  }
+</style>

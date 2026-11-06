@@ -1,0 +1,185 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import HeroMockup from "@/components/content/HeroMockup.astro";
+import FeatureGrid from "@/components/content/FeatureGrid.astro";
+import StepList from "@/components/content/StepList.astro";
+import StatsBar from "@/components/content/StatsBar.astro";
+import Pricing from "@/components/section/Pricing.astro";
+import Faq from "@/components/section/Faq.astro";
+import LogoMarquee from "@/components/section/LogoMarquee.astro";
+import Testimonials from "@/components/content/Testimonials.astro";
+
+const features = [
+  {
+    icon: "layers",
+    title: "Agent Builder",
+    text: "Compose multi-step agents with a visual editor or code. Version, branch, and roll back any time.",
+  },
+  {
+    icon: "database",
+    title: "Knowledge Base",
+    text: "Connect docs, databases, and APIs. Quill keeps retrieval fresh and grounded in your own data.",
+  },
+  {
+    icon: "bolt",
+    title: "Workflows",
+    text: "Trigger runs on a schedule, webhook, or event. Chain agents into pipelines that run unattended.",
+  },
+  {
+    icon: "shield",
+    title: "Guardrails",
+    text: "Set policies, PII filters, and approval gates. Ship AI you can actually put in front of customers.",
+  },
+  {
+    icon: "chart",
+    title: "Evals & Analytics",
+    text: "Score every run on quality, cost, and latency. Catch regressions before your users do.",
+  },
+  {
+    icon: "code",
+    title: "Developer API",
+    text: "A clean REST + TypeScript SDK. Drop any agent into your app with a few lines of code.",
+  },
+] as const;
+
+const steps = [
+  {
+    title: "Connect your data",
+    text: "Point Quill at your docs, database, Notion, or any API. It indexes and keeps everything in sync automatically.",
+  },
+  {
+    title: "Build your agent",
+    text: "Describe the job in plain language or drag steps together. Test against real examples before you ship.",
+  },
+  {
+    title: "Deploy & monitor",
+    text: "Launch to an endpoint, schedule, or embed. Watch every run with full logs, evals, and cost tracking.",
+  },
+];
+
+const stats = [
+  { value: "10M+", label: "Agent runs per day" },
+  { value: "99.98%", label: "Uptime SLA", accent: true },
+  { value: "4,000+", label: "Teams building on Quill" },
+  { value: "80%", label: "Less time on busywork" },
+];
+---
+
+<Layout>
+  <Section paddingTop="medium" paddingBottom="small">
+    <ContentWrapper centered>
+      <Eyebrow variant="pill">Now with Quill Agents 2.0</Eyebrow>
+      <Heading variant="display" tag="h1" maxWidth={18}>
+        The AI workspace that actually ships work
+      </Heading>
+      <Paragraph variant="large" class="text-color-2" maxWidth={52}>
+        Quill turns messy prompts into production-grade content, research, and
+        automations. Build agents, connect your data, and let the work run
+        itself.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href="/#pricing">Start building free</Button>
+        <Button element="link" href="/#faq" emphasis="secondary">
+          Book a demo
+        </Button>
+      </ButtonWrapper>
+      <Paragraph variant="small" class="text-style-label text-color-2">
+        No credit card · Free for 14 days
+      </Paragraph>
+    </ContentWrapper>
+  </Section>
+
+  <Section paddingTop="none" paddingBottom="medium">
+    <HeroMockup />
+  </Section>
+
+  <LogoMarquee />
+
+  <Section id="platform" gap="6">
+    <Eyebrow variant="label">Platform</Eyebrow>
+    <ContentWrapper variant="columns">
+      <Heading tag="h2" variant="h1" maxWidth={22}>
+        Everything you need to ship AI into production
+      </Heading>
+      <Paragraph slot="column2" variant="large" class="text-color-2" maxWidth={34}>
+        One platform for building, testing, and running agents — with the
+        guardrails real teams need.
+      </Paragraph>
+    </ContentWrapper>
+    <FeatureGrid items={[...features]} />
+  </Section>
+
+  <Section id="how-it-works" theme="light" class="surface" gap="7">
+    <ContentWrapper>
+      <Eyebrow variant="label">How it works</Eyebrow>
+      <Heading tag="h2" variant="h1" maxWidth={20}>
+        From idea to running agent in three steps
+      </Heading>
+    </ContentWrapper>
+    <StepList steps={steps} />
+  </Section>
+
+  <Section theme="dark">
+    <StatsBar stats={stats} />
+  </Section>
+
+  <Section id="customers" gap="6">
+    <ContentWrapper>
+      <Eyebrow variant="label">Customers</Eyebrow>
+      <Heading tag="h2" variant="h1" maxWidth={20}>
+        Loved by the people who ship
+      </Heading>
+    </ContentWrapper>
+    <Testimonials
+      featured={{
+        quote:
+          "We replaced a tangle of scripts and three vendors with one Quill workspace. Our content team ships <em>4x more</em> without adding headcount.",
+        name: "Maya Reddy",
+        role: "Head of Content, Northwind",
+      }}
+      quotes={[
+        {
+          quote:
+            "The guardrails and evals are what sold our security team. We went live in two weeks.",
+          name: "Jordan Lee",
+          role: "CTO, Vantyr",
+        },
+        {
+          quote:
+            "Support deflection jumped 38% in the first month. It just works.",
+          name: "Ana Costa",
+          role: "VP Support, Meridian",
+        },
+      ]}
+    />
+  </Section>
+
+  <Pricing />
+
+  <Faq />
+
+  <Section id="get-started" theme="brand" paddingTop="large" paddingBottom="large">
+    <ContentWrapper centered>
+      <Heading tag="h2" variant="display" maxWidth={16}>
+        Put your AI to work today
+      </Heading>
+      <Paragraph variant="large" maxWidth={44}>
+        Spin up your first agent in minutes. No credit card, no sales call —
+        just build.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href="/#pricing">Start building free</Button>
+        <Button element="link" href="/#faq" emphasis="secondary">
+          Talk to sales
+        </Button>
+      </ButtonWrapper>
+    </ContentWrapper>
+  </Section>
+</Layout>

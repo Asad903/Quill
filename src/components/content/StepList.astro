@@ -1,0 +1,59 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+
+type Props = HTMLAttributes<"ol"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Steps to show, in order. */
+  steps: { title: string; text: string }[];
+};
+
+const { render = true, steps, class: className, ...rest } = Astro.props;
+---
+
+{render && steps.length > 0 && (
+  <ol class:list={["step-list_wrap", className]} {...rest}>
+    {steps.map((step, i) => (
+      <li class="step-list_item">
+        <span class="step-list_number" aria-hidden="true">
+          {String(i + 1).padStart(2, "0")}
+        </span>
+        <Heading tag="h3" variant="h4">{step.title}</Heading>
+        <Paragraph class="text-color-2">{step.text}</Paragraph>
+      </li>
+    ))}
+  </ol>
+)}
+
+<style is:global>
+  @layer components {
+    .step-list_wrap {
+      display: grid;
+      gap: var(--space-7);
+      width: 100%;
+      @media (width >= 48rem) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .step-list_item {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      & :is(h3, p) {
+        margin: 0;
+      }
+    }
+
+    .step-list_number {
+      font-family: var(--mono-family);
+      font-size: 3.375rem;
+      font-weight: var(--primary-bold);
+      line-height: 1;
+      color: var(--brand-500);
+      -webkit-text-stroke: var(--border-width) var(--text);
+    }
+  }
+</style>
