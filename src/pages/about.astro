@@ -1,0 +1,127 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import Button from "@/components/Button.astro";
+import FeatureGrid from "@/components/content/FeatureGrid.astro";
+import StatsBar from "@/components/content/StatsBar.astro";
+
+const values = [
+  {
+    icon: "bolt",
+    title: "Ship, then refine",
+    text: "Working software beats perfect plans. We release early, measure honestly, and improve in the open.",
+  },
+  {
+    icon: "shield",
+    title: "Trust by default",
+    text: "AI only matters if people can rely on it. Safety, privacy, and control are built in, not bolted on.",
+  },
+  {
+    icon: "layers",
+    title: "Simple on the surface",
+    text: "Powerful systems should feel obvious to use. We sweat the details so your team doesn't have to.",
+  },
+  {
+    icon: "chart",
+    title: "Prove it with data",
+    text: "Every claim gets an eval. We hold ourselves, and our agents, to measurable quality.",
+  },
+  {
+    icon: "code",
+    title: "Built for builders",
+    text: "Clean APIs, honest docs, and no lock-in. Quill fits into your stack, not the other way around.",
+  },
+  {
+    icon: "database",
+    title: "Customers first",
+    text: "Our roadmap is shaped by the teams shipping on Quill every day. We listen, then we build.",
+  },
+] as const;
+
+const stats = [
+  { value: "2022", label: "Founded" },
+  { value: "60+", label: "People across 12 countries" },
+  { value: "4,000+", label: "Teams building on Quill", accent: true },
+  { value: "10M+", label: "Agent runs per day" },
+];
+---
+
+<Layout
+  title="About"
+  description="Quill is on a mission to make AI work reliable enough to ship. Learn who we are and what we believe."
+>
+  <Section paddingTop="medium" paddingBottom="medium">
+    <ContentWrapper centered>
+      <Eyebrow variant="pill">About Quill</Eyebrow>
+      <Heading variant="display" tag="h1" maxWidth={18}>
+        We're making AI work something you can ship
+      </Heading>
+      <Paragraph variant="large" class="text-color-2" maxWidth={52}>
+        Quill started with a simple frustration: AI demos are easy, but
+        production AI is hard. We build the platform that closes that gap.
+      </Paragraph>
+    </ContentWrapper>
+  </Section>
+
+  <Section theme="dark">
+    <StatsBar stats={stats} />
+  </Section>
+
+  <Section id="story" gap="6">
+    <Eyebrow variant="label">Our story</Eyebrow>
+    <ContentWrapper variant="columns">
+      <Heading tag="h2" variant="h1" maxWidth={20}>
+        From scattered scripts to one workspace
+      </Heading>
+      <Paragraph slot="column2" variant="large" class="text-color-2" maxWidth={34}>
+        Our founders spent years wiring prompts, vector stores, and cron jobs
+        together for content and support teams. Every project reinvented the
+        same fragile plumbing.
+      </Paragraph>
+    </ContentWrapper>
+    <ContentWrapper variant="columns">
+      <Paragraph class="text-color-2" maxWidth={40}>
+        So we built the tool we wished we had: one place to connect data, build
+        agents, add guardrails, and watch every run. Today thousands of teams
+        use Quill to turn messy prompts into reliable, production-grade work.
+      </Paragraph>
+      <Paragraph slot="column2" class="text-color-2" maxWidth={40}>
+        We're a distributed team of engineers, designers, and operators who
+        care about craft. We're still early, and we're hiring people who want
+        to shape what AI at work looks like.
+      </Paragraph>
+    </ContentWrapper>
+  </Section>
+
+  <Section id="values" theme="light" class="surface" gap="6">
+    <ContentWrapper>
+      <Eyebrow variant="label">Values</Eyebrow>
+      <Heading tag="h2" variant="h1" maxWidth={20}>
+        What we believe
+      </Heading>
+    </ContentWrapper>
+    <FeatureGrid items={[...values]} />
+  </Section>
+
+  <Section theme="brand" paddingTop="large" paddingBottom="large">
+    <ContentWrapper centered>
+      <Heading tag="h2" variant="display" maxWidth={16}>
+        Come build with us
+      </Heading>
+      <Paragraph variant="large" maxWidth={44}>
+        Try Quill free, or talk to us about joining the team.
+      </Paragraph>
+      <ButtonWrapper>
+        <Button element="link" href="/#pricing">Start building free</Button>
+        <Button element="link" href="/" emphasis="secondary">
+          View careers
+        </Button>
+      </ButtonWrapper>
+    </ContentWrapper>
+  </Section>
+</Layout>
