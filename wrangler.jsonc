@@ -13,9 +13,19 @@
 	"kv_namespaces": [
 		{
 			"binding": "SESSION",
-			"id": "36dc6fefacd74466805fe6b16bbc9aa3"
+			"id": "36dc6fefacd74466805fe6b16bbc9aa3",
+			"preview_id": "36dc6fefacd74466805fe6b16bbc9aa3"
 		}
 	],
+	"previews": {
+		"kv_namespaces": [
+			{
+				"binding": "SESSION",
+				"id": "36dc6fefacd74466805fe6b16bbc9aa3",
+				"preview_id": "36dc6fefacd74466805fe6b16bbc9aa3"
+			}
+		]
+	},
 	"observability": {
 		"enabled": true
 	}
