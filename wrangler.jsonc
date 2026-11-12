@@ -8,6 +8,14 @@
 		"directory": "./dist",
 		"binding": "ASSETS"
 	},
+	"workers_dev": true,
+	"preview_urls": true,
+	"kv_namespaces": [
+		{
+			"binding": "SESSION",
+			"id": "36dc6fefacd74466805fe6b16bbc9aa3"
+		}
+	],
 	"observability": {
 		"enabled": true
 	}
