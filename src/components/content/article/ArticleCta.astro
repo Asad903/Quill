@@ -1,0 +1,14 @@
+---
+import Button from "@/components/Button.astro";
+import ButtonWrapper from "@/components/wrapper/ButtonWrapper.astro";
+
+type Props = { node: { label: string; href: string; emphasis?: "primary" | "secondary" } };
+
+const { node } = Astro.props;
+---
+
+<ButtonWrapper>
+  <Button element="link" href={node.href} emphasis={node.emphasis ?? "primary"}>
+    {node.label}
+  </Button>
+</ButtonWrapper>

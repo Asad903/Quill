@@ -1,0 +1,208 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { PortableTextBlock } from "@portabletext/types";
+import { PortableText } from "astro-portabletext";
+import ArticleHeading from "./article/ArticleHeading.astro";
+import ArticleCallout from "./article/ArticleCallout.astro";
+import ArticleTable from "./article/ArticleTable.astro";
+import ArticleCode from "./article/ArticleCode.astro";
+import ArticlePullQuote from "./article/ArticlePullQuote.astro";
+import ArticleVideo from "./article/ArticleVideo.astro";
+import ArticleImage from "./article/ArticleImage.astro";
+import ArticleGallery from "./article/ArticleGallery.astro";
+import ArticleCta from "./article/ArticleCta.astro";
+import ArticleStat from "./article/ArticleStat.astro";
+import ArticleLink from "./article/ArticleLink.astro";
+import ArticleInternalLink from "./article/ArticleInternalLink.astro";
+import ArticleHighlight from "./article/ArticleHighlight.astro";
+import ArticleSup from "./article/ArticleSup.astro";
+
+type Props = HTMLAttributes<"div"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Portable Text body from Sanity. */
+  value: PortableTextBlock[];
+};
+
+const { render = true, value, class: className, ...rest } = Astro.props;
+
+const components = {
+  type: {
+    callout: ArticleCallout,
+    table: ArticleTable,
+    codeBlock: ArticleCode,
+    pullQuote: ArticlePullQuote,
+    videoEmbed: ArticleVideo,
+    image: ArticleImage,
+    imageGallery: ArticleGallery,
+    ctaButton: ArticleCta,
+    statComparison: ArticleStat,
+  },
+  block: { h2: ArticleHeading, h3: ArticleHeading, h4: ArticleHeading },
+  mark: {
+    link: ArticleLink,
+    internalLink: ArticleInternalLink,
+    highlight: ArticleHighlight,
+    sup: ArticleSup,
+  },
+};
+---
+
+{render && value?.length > 0 && (
+  <div class:list={["article-body_wrap", className]} {...rest}>
+    <PortableText value={value} components={components} />
+  </div>
+)}
+
+<style is:global>
+  @layer components {
+    .article-body_wrap {
+      --_gap: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--_gap);
+      font-size: var(--text-main);
+      line-height: var(--line-height-huge);
+
+      & :is(h2, h3, h4) {
+        scroll-margin-top: calc(var(--nav-height) + var(--space-4));
+        margin-top: var(--space-5);
+        font-weight: var(--primary-bold);
+        line-height: var(--line-height-medium);
+        letter-spacing: var(--letter-spacing-snug);
+        text-wrap: balance;
+      }
+      & h2 { font-size: var(--h3); }
+      & h3 { font-size: var(--text-large); }
+      & h4 { font-size: var(--text-main); }
+
+      & a {
+        text-decoration: underline;
+        text-decoration-color: var(--brand-500);
+        text-decoration-thickness: 0.125rem;
+        text-underline-offset: 0.2em;
+      }
+      & mark {
+        background-color: var(--brand-200);
+        color: inherit;
+        padding: 0 0.2em;
+        border-radius: 0.2em;
+      }
+      & :not(pre) > code {
+        padding: 0.15em 0.4em;
+        border-radius: 0.375rem;
+        background-color: var(--background-2);
+        font-family: var(--mono-family);
+        font-size: 0.875em;
+      }
+      & sup {
+        font-size: 0.7em;
+      }
+
+      & :is(ul, ol) {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        padding-left: 1.25rem;
+      }
+      & ul { list-style: disc; }
+      & ol { list-style: decimal; }
+      & li::marker { color: var(--brand-500); font-weight: var(--primary-bold); }
+      & li :is(ul, ol) { margin-top: var(--space-2); }
+
+      & > blockquote {
+        padding-left: var(--space-4);
+        border-left: 0.25rem solid var(--brand-500);
+        font-size: var(--text-large);
+        font-weight: var(--primary-medium);
+        line-height: var(--line-height-large);
+      }
+    }
+
+    .article-body_callout {
+      padding: var(--space-4);
+      border-radius: var(--radius-medium);
+      border-left: 0.25rem solid var(--dark-900);
+      background-color: var(--background-2);
+      font-size: var(--text-small);
+
+      &.tip { border-left-color: var(--success); }
+      &.warning { border-left-color: var(--brand-500); background-color: var(--brand-200); }
+    }
+    .article-body_callout_title {
+      margin-bottom: var(--space-1);
+      font-weight: var(--primary-semibold);
+    }
+
+    .article-body_table_scroll {
+      overflow-x: auto;
+      border: var(--border-width) solid var(--background-3);
+      border-radius: var(--radius-medium);
+
+      & table { width: 100%; border-collapse: collapse; font-size: var(--text-small); }
+      & caption { padding: var(--space-3); text-align: left; font-weight: var(--primary-semibold); }
+      & :is(th, td) { padding: var(--space-3) var(--space-4); text-align: left; border-top: var(--border-width) solid var(--background-3); white-space: nowrap; }
+      & thead th { background-color: var(--background-2); font-weight: var(--primary-semibold); }
+    }
+
+    .article-body_code {
+      border-radius: var(--radius-medium);
+      background-color: var(--dark-900);
+      color: var(--light-100);
+      overflow: clip;
+
+      & figcaption { padding: var(--space-3) var(--space-4) 0; color: var(--brand-500); }
+      & pre { padding: var(--space-4); overflow-x: auto; }
+      & code { font-family: var(--mono-family); font-size: var(--text-small); line-height: var(--line-height-large); }
+    }
+
+    .article-body_pullquote {
+      padding: var(--space-5) 0;
+      border-block: var(--border-width) solid var(--background-3);
+
+      & blockquote { font-size: var(--h3); font-weight: var(--primary-bold); line-height: var(--line-height-medium); letter-spacing: var(--letter-spacing-snug); text-wrap: balance; }
+      & figcaption { margin-top: var(--space-3); font-size: var(--text-small); color: var(--text-2); }
+    }
+
+    .article-body_video {
+      & iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: var(--radius-medium); background-color: var(--dark-900); }
+    }
+
+    .article-body_image img { width: 100%; border-radius: var(--radius-medium); }
+
+    .article-body_gallery {
+      display: grid;
+      gap: var(--space-3);
+      @media (width >= 48rem) {
+        grid-template-columns: repeat(var(--_count, 2), 1fr);
+      }
+      & img { width: 100%; aspect-ratio: 7 / 5; object-fit: cover; border-radius: var(--radius-medium); }
+    }
+
+    :is(.article-body_image, .article-body_video, .article-body_gallery) figcaption {
+      margin-top: var(--space-2);
+      font-size: var(--text-small);
+      color: var(--text-2);
+    }
+
+    .article-body_stat {
+      display: grid;
+      border-radius: var(--radius-medium);
+      overflow: clip;
+      border: var(--border-width) solid var(--background-3);
+      @media (width >= 30rem) {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      & p { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-4); }
+      & strong { font-size: var(--h3); font-weight: var(--primary-bold); letter-spacing: var(--letter-spacing-snug); }
+      & span { font-size: var(--text-small); color: var(--text-2); }
+    }
+    .article-body_stat_after {
+      background-color: var(--dark-900);
+      color: var(--light-100);
+      & strong { color: var(--brand-500); }
+      & span { color: color-mix(in lab, var(--light-100) 60%, transparent); }
+    }
+  }
+</style>

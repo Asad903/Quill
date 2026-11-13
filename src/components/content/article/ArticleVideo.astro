@@ -1,0 +1,29 @@
+---
+type Props = { node: { url: string; caption?: string } };
+
+const { node } = Astro.props;
+
+function embedUrl(url: string): string | undefined {
+  const { hostname, pathname, searchParams } = new URL(url);
+  if (hostname.includes("youtube.com") && searchParams.get("v")) {
+    return `https://www.youtube-nocookie.com/embed/${searchParams.get("v")}`;
+  }
+  if (hostname === "youtu.be") return `https://www.youtube-nocookie.com/embed${pathname}`;
+  if (hostname.includes("vimeo.com")) return `https://player.vimeo.com/video${pathname}`;
+}
+
+const src = embedUrl(node.url);
+---
+
+{src && (
+  <figure class="article-body_video">
+    <iframe
+      src={src}
+      title={node.caption ?? "Embedded video"}
+      loading="lazy"
+      allow="accelerometer; encrypted-media; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+    {node.caption && <figcaption>{node.caption}</figcaption>}
+  </figure>
+)}

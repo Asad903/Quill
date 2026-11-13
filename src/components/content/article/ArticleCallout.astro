@@ -1,0 +1,10 @@
+---
+type Props = { node: { tone?: "note" | "tip" | "warning"; title?: string; text: string } };
+
+const { node } = Astro.props;
+---
+
+<aside class:list={["article-body_callout", node.tone ?? "note"]}>
+  {node.title && <p class="article-body_callout_title">{node.title}</p>}
+  <p>{node.text}</p>
+</aside>

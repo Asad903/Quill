@@ -1,0 +1,130 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { formatLongDate, imageUrl, initials, type PostSummary } from "@/utils/sanity.ts";
+
+type Props = HTMLAttributes<"header"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Post to introduce. */
+  post: PostSummary;
+};
+
+const { render = true, post, class: className, ...rest } = Astro.props;
+---
+
+{render && post && (
+  <header class:list={["article-header_wrap", className]} {...rest}>
+    <a class="article-header_back text-style-small text-color-2" href="/blog">← Back to the Journal</a>
+    <p class="article-header_meta text-style-label">
+      <span class="article-header_pill">{post.category.title}</span>
+      <span class="text-color-2">
+        {formatLongDate(post.publishedAt)}{post.readTime && ` · ${post.readTime} min read`}
+      </span>
+    </p>
+    <h1 class="article-header_title">{post.title}</h1>
+    <p class="article-header_excerpt text-color-2">{post.excerpt}</p>
+    <p class="article-header_author">
+      <span class="article-header_avatar" aria-hidden="true">{initials(post.author.name)}</span>
+      <span class="article-header_author_text">
+        <strong>{post.author.name}</strong>
+        <span class="text-color-2">{post.author.role}</span>
+      </span>
+    </p>
+    {post.coverImage && (
+      <figure class="article-header_cover">
+        <img
+          src={imageUrl(post.coverImage, 1600, 800)}
+          alt={post.coverImage.alt ?? ""}
+          width="1600"
+          height="800"
+          fetchpriority="high"
+        />
+        {post.coverImage.caption && <figcaption class="text-style-label">{post.coverImage.caption}</figcaption>}
+      </figure>
+    )}
+  </header>
+)}
+
+<style is:global>
+  @layer components {
+    .article-header_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      width: 100%;
+      max-width: 46rem;
+      margin-inline: auto;
+    }
+
+    .article-header_meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .article-header_pill {
+      padding: 0.35em 0.9em;
+      border-radius: var(--radius-round);
+      background-color: var(--brand-500);
+      color: var(--brand-text);
+    }
+
+    .article-header_title {
+      font-size: var(--h1);
+      font-weight: var(--primary-bold);
+      line-height: var(--line-height-small);
+      letter-spacing: var(--letter-spacing-tight);
+      text-wrap: balance;
+    }
+
+    .article-header_excerpt {
+      font-size: var(--text-large);
+      line-height: var(--line-height-large);
+    }
+
+    .article-header_author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .article-header_avatar {
+      display: grid;
+      place-items: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: var(--radius-round);
+      background-color: var(--dark-900);
+      color: var(--light-100);
+      font-size: var(--text-small);
+      font-weight: var(--primary-semibold);
+    }
+
+    .article-header_author_text {
+      display: flex;
+      flex-direction: column;
+      font-size: var(--text-small);
+    }
+
+    .article-header_cover {
+      @media (width >= 64rem) {
+        width: min(100vw - 2rem, 68rem);
+        margin-inline: calc((100% - min(100vw - 2rem, 68rem)) / 2);
+      }
+
+      & img {
+        width: 100%;
+        aspect-ratio: 2 / 1;
+        object-fit: cover;
+        border-radius: var(--radius-main);
+        background-color: var(--brand-200);
+      }
+
+      & figcaption {
+        margin-top: var(--space-2);
+        text-align: right;
+        color: var(--text-2);
+      }
+    }
+  }
+</style>

@@ -6,14 +6,21 @@ import { isNoindexRoute } from "./src/utils/seo.ts";
 
 import cloudflare from "@astrojs/cloudflare";
 
+import sanity from "@sanity/astro";
+import react from "@astrojs/react";
+
 export default defineConfig({
   site: SITE_URL,
 
-  integrations: [
-    sitemap({
-      filter: (page) => !isNoindexRoute(new URL(page).pathname),
-    }),
-  ],
+  integrations: [sitemap({
+    filter: (page) => !isNoindexRoute(new URL(page).pathname),
+  }), sanity({
+    projectId: "zq58u9lx",
+    dataset: "production",
+    useCdn: process.env.NODE_ENV === "production",
+    apiVersion: "2026-11-13",
+    studioBasePath: "/studio",
+  }), react()],
 
   fonts: [
     {

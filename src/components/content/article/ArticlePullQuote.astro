@@ -1,0 +1,10 @@
+---
+type Props = { node: { quote: string; attribution?: string } };
+
+const { node } = Astro.props;
+---
+
+<figure class="article-body_pullquote">
+  <blockquote>{node.quote}</blockquote>
+  {node.attribution && <figcaption>— {node.attribution}</figcaption>}
+</figure>

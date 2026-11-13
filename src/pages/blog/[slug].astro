@@ -1,0 +1,58 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Heading from "@/components/typography/Heading.astro";
+import ArticleHeader from "@/components/content/ArticleHeader.astro";
+import ArticleBody from "@/components/content/ArticleBody.astro";
+import ArticleLayout from "@/components/content/ArticleLayout.astro";
+import ArticleToc from "@/components/content/ArticleToc.astro";
+import ArticleAuthor from "@/components/content/ArticleAuthor.astro";
+import BlogCard from "@/components/content/BlogCard.astro";
+import { getPost, imageUrl } from "@/utils/sanity.ts";
+import { slug } from "@/utils/slug.ts";
+
+export const prerender = false;
+
+const post = await getPost(Astro.params.slug ?? "");
+if (!post) return Astro.rewrite("/404");
+
+const headings = post.body
+  .filter((block) => block._type === "block" && block.style === "h2")
+  .map((block) => {
+    const title = (block.children as { text: string }[]).map((child) => child.text).join("");
+    return { title, id: slug(title) };
+  });
+---
+
+<Layout
+  title={post.seoTitle ?? post.title}
+  description={post.seoDescription ?? post.excerpt}
+  image={post.coverImage ? imageUrl(post.coverImage, 1200, 630) : undefined}
+>
+  {/* Header */}
+  <Section paddingBottom="small">
+    <ArticleHeader post={post} />
+  </Section>
+
+  {/* Body */}
+  <Section paddingTop="small">
+    <ArticleLayout>
+      <ArticleToc slot="aside" headings={headings} />
+      <ArticleBody value={post.body} />
+      <ArticleAuthor author={post.author} tags={post.tags} />
+    </ArticleLayout>
+  </Section>
+
+  {/* Related */}
+  <Section theme="light" class="surface" gap="6" render={!!post.relatedPosts?.length}>
+    <ContentWrapper>
+      <Heading tag="h2" variant="h2">Keep reading</Heading>
+    </ContentWrapper>
+    <Grid xsmall={1} small={2} large={3}>
+      {post.relatedPosts?.map((related) => <BlogCard post={related} />)}
+    </Grid>
+  </Section>
+</Layout>
+

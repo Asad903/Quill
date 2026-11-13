@@ -1,0 +1,18 @@
+---
+type Props = {
+  node: { beforeValue: string; beforeLabel: string; afterValue: string; afterLabel: string };
+};
+
+const { node } = Astro.props;
+---
+
+<div class="article-body_stat">
+  <p class="article-body_stat_before">
+    <strong>{node.beforeValue}</strong>
+    <span>{node.beforeLabel}</span>
+  </p>
+  <p class="article-body_stat_after">
+    <strong>{node.afterValue}</strong>
+    <span>{node.afterLabel}</span>
+  </p>
+</div>
