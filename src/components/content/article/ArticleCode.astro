@@ -1,0 +1,10 @@
+---
+type Props = { node: { language?: string; code: string } };
+
+const { node } = Astro.props;
+---
+
+<figure class="article-body_code">
+  {node.language && <figcaption class="text-style-label">{node.language}</figcaption>}
+  <pre><code>{node.code}</code></pre>
+</figure>

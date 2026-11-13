@@ -1,0 +1,26 @@
+---
+type Props = { node: { caption?: string; hasHeaderRow?: boolean; rows: { cells: string[] }[] } };
+
+const { node } = Astro.props;
+const [first, ...rest] = node.rows;
+const header = node.hasHeaderRow !== false ? first : undefined;
+const body = header ? rest : node.rows;
+---
+
+<figure class="article-body_table">
+  <div class="article-body_table_scroll">
+    <table>
+      {node.caption && <caption>{node.caption}</caption>}
+      {header && (
+        <thead>
+          <tr>{header.cells.map((cell) => <th scope="col">{cell}</th>)}</tr>
+        </thead>
+      )}
+      <tbody>
+        {body.map((row) => (
+          <tr>{row.cells.map((cell) => <td>{cell}</td>)}</tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</figure>

@@ -1,0 +1,108 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { formatDate, imageUrl, initials, type PostSummary } from "@/utils/sanity.ts";
+
+type Props = HTMLAttributes<"article"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Post to show. */
+  post: PostSummary;
+};
+
+const { render = true, post, class: className, ...rest } = Astro.props;
+---
+
+{render && post && (
+  <article class:list={["blog-card_wrap", className]} {...rest}>
+    <div class="blog-card_media">
+      {post.coverImage && (
+        <img
+          class="blog-card_image"
+          src={imageUrl(post.coverImage, 800, 534)}
+          alt={post.coverImage.alt ?? ""}
+          width="800"
+          height="534"
+          loading="lazy"
+        />
+      )}
+    </div>
+    <p class="blog-card_category text-style-label text-color-2">{post.category.title}</p>
+    <h3 class="blog-card_title">
+      <a class="blog-card_link" href={`/blog/${post.slug}`}>{post.title}</a>
+    </h3>
+    <p class="blog-card_excerpt text-color-2">{post.excerpt}</p>
+    <p class="blog-card_author">
+      <span class="blog-card_avatar" aria-hidden="true">{initials(post.author.name)}</span>
+      <span class="text-color-2">{post.author.name} · {formatDate(post.publishedAt)}</span>
+    </p>
+  </article>
+)}
+
+<style is:global>
+  @layer components {
+    .blog-card_wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .blog-card_media {
+      aspect-ratio: 3 / 2;
+      margin-bottom: var(--space-2);
+      border-radius: var(--radius-main);
+      background-color: var(--background-2);
+      overflow: clip;
+    }
+
+    .blog-card_image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: scale var(--hover-duration) var(--hover-ease);
+    }
+
+    .blog-card_wrap:hover .blog-card_image {
+      scale: 1.03;
+    }
+
+    .blog-card_title {
+      font-size: var(--text-large);
+      font-weight: var(--primary-semibold);
+      line-height: var(--line-height-medium);
+      letter-spacing: var(--letter-spacing-snug);
+      text-wrap: balance;
+    }
+
+    .blog-card_link::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+    }
+
+    .blog-card_excerpt {
+      font-size: var(--text-small);
+      line-height: var(--line-height-large);
+    }
+
+    .blog-card_author {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+      font-size: var(--text-small);
+    }
+
+    .blog-card_avatar {
+      display: grid;
+      place-items: center;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: var(--radius-round);
+      background-color: var(--dark-900);
+      color: var(--light-100);
+      font-size: 0.625rem;
+      font-weight: var(--primary-semibold);
+    }
+  }
+</style>

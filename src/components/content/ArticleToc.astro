@@ -1,0 +1,49 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"nav"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Sections to link to. */
+  headings: { title: string; id: string }[];
+};
+
+const { render = true, headings, class: className, ...rest } = Astro.props;
+---
+
+{render && headings.length > 0 && (
+  <nav class:list={["article-toc_wrap", className]} aria-label="On this page" {...rest}>
+    <p class="article-toc_label text-style-label text-color-2">On this page</p>
+    <ul class="article-toc_list">
+      {headings.map((heading) => (
+        <li><a class="article-toc_link" href={`#${heading.id}`}>{heading.title}</a></li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style is:global>
+  @layer components {
+    .article-toc_wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+
+    .article-toc_list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+
+    .article-toc_link {
+      font-size: var(--text-small);
+      color: var(--text-2);
+      transition: color var(--hover-duration) var(--hover-ease);
+
+      &:hover {
+        color: var(--text);
+      }
+    }
+  }
+</style>

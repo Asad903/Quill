@@ -1,0 +1,67 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"nav"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Categories to list after "All". */
+  categories: { title: string; slug: string }[];
+  /** Slug of the active category. Omit for "All". */
+  active?: string;
+};
+
+const { render = true, categories, active, class: className, ...rest } = Astro.props;
+const items = [{ title: "All", slug: "" }, ...categories];
+---
+
+{render && categories.length > 0 && (
+  <nav class:list={["blog-filters_wrap", className]} aria-label="Filter posts by category" {...rest}>
+    <ul class="blog-filters_list">
+      {items.map((item) => {
+        const current = (active ?? "") === item.slug;
+        return (
+          <li>
+            <a
+              class:list={["blog-filters_pill", current && "active"]}
+              href={item.slug ? `/blog?category=${item.slug}` : "/blog"}
+              aria-current={current ? "page" : undefined}
+            >
+              {item.title}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+)}
+
+<style is:global>
+  @layer components {
+    .blog-filters_list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .blog-filters_pill {
+      display: inline-flex;
+      padding: 0.5em 1em;
+      border: var(--border-width) solid var(--background-3);
+      border-radius: var(--radius-round);
+      font-size: var(--text-small);
+      transition:
+        background-color var(--hover-duration) var(--hover-ease),
+        color var(--hover-duration) var(--hover-ease);
+
+      &:hover {
+        background-color: var(--background-2);
+      }
+
+      &.active {
+        border-color: var(--dark-900);
+        background-color: var(--dark-900);
+        color: var(--light-100);
+      }
+    }
+  }
+</style>

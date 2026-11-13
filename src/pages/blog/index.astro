@@ -1,0 +1,59 @@
+---
+import Layout from "@/layouts/BaseLayout.astro";
+import Section from "@/components/wrapper/Section.astro";
+import Grid from "@/components/wrapper/Grid.astro";
+import ContentWrapper from "@/components/wrapper/ContentWrapper.astro";
+import Eyebrow from "@/components/typography/Eyebrow.astro";
+import Heading from "@/components/typography/Heading.astro";
+import Paragraph from "@/components/typography/Paragraph.astro";
+import BlogFeatured from "@/components/content/BlogFeatured.astro";
+import BlogFilters from "@/components/content/BlogFilters.astro";
+import BlogCard from "@/components/content/BlogCard.astro";
+import BlogPagination from "@/components/content/BlogPagination.astro";
+import { POSTS_PER_PAGE, getCategories, getFeaturedPost, getPosts } from "@/utils/sanity.ts";
+
+export const prerender = false;
+
+const url = new URL(Astro.request.url);
+const category = url.searchParams.get("category") ?? undefined;
+const page = Math.max(1, Number(url.searchParams.get("page")) || 1);
+
+const [categories, featured, { posts, total }] = await Promise.all([
+  getCategories(),
+  category ? Promise.resolve(null) : getFeaturedPost(),
+  getPosts({ category, page }),
+]);
+const totalPages = Math.ceil(total / POSTS_PER_PAGE);
+---
+
+<Layout
+  title="Blog"
+  description="Product deep-dives, engineering notes, and field guides from the team shipping Quill."
+>
+  {/* Header */}
+  <Section paddingTop="medium" paddingBottom="small" gap="6">
+    <Eyebrow variant="label">The Journal</Eyebrow>
+    <ContentWrapper variant="columns">
+      <Heading tag="h1" variant="display" maxWidth={14}>
+        Ideas on building with AI
+      </Heading>
+      <Paragraph slot="column2" variant="large" class="text-color-2" maxWidth={34}>
+        Product deep-dives, engineering notes, and field guides from the team
+        shipping Quill.
+      </Paragraph>
+    </ContentWrapper>
+    <BlogFeatured post={featured} />
+  </Section>
+
+  {/* Posts */}
+  <Section paddingTop="small" gap="6">
+    <BlogFilters categories={categories} active={category} />
+    <Grid xsmall={1} small={2} large={3}>
+      {posts.map((post) => <BlogCard post={post} />)}
+    </Grid>
+    <Paragraph render={posts.length === 0} class="text-color-2">
+      No posts in this category yet.
+    </Paragraph>
+    <BlogPagination page={page} totalPages={totalPages} category={category} />
+  </Section>
+</Layout>

@@ -1,0 +1,13 @@
+---
+import type { BlockProps } from "astro-portabletext/types";
+import { slug } from "@/utils/slug.ts";
+
+type Props = BlockProps;
+
+const { node } = Astro.props;
+const text = node.children.map((child) => ("text" in child ? child.text : "")).join("");
+const id = slug(text);
+const Tag = node.style as "h2" | "h3" | "h4";
+---
+
+<Tag id={id}><slot /></Tag>

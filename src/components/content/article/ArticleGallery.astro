@@ -1,0 +1,16 @@
+---
+import { imageUrl, type SanityImage } from "@/utils/sanity.ts";
+
+type Props = { node: { images: (SanityImage & { _key: string })[] } };
+
+const { node } = Astro.props;
+---
+
+<div class="article-body_gallery" style={`--_count: ${node.images.length}`}>
+  {node.images.map((image) => (
+    <figure>
+      <img src={imageUrl(image, 700, 500)} alt={image.alt ?? ""} loading="lazy" />
+      {image.caption && <figcaption>{image.caption}</figcaption>}
+    </figure>
+  ))}
+</div>

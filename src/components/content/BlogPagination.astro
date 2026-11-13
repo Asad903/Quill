@@ -1,0 +1,72 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"nav"> & {
+  /** Set to `false` to omit the component. */
+  render?: boolean;
+  /** Current page, starting at 1. */
+  page: number;
+  /** Total number of pages. */
+  totalPages: number;
+  /** Active category slug, kept in every link. */
+  category?: string;
+};
+
+const { render = true, page, totalPages, category, class: className, ...rest } = Astro.props;
+
+const href = (n: number) => {
+  const params = new URLSearchParams();
+  if (category) params.set("category", category);
+  if (n > 1) params.set("page", String(n));
+  const query = params.toString();
+  return query ? `/blog?${query}` : "/blog";
+};
+
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+---
+
+{render && totalPages > 1 && (
+  <nav class:list={["blog-pagination_wrap", className]} aria-label="Pagination" {...rest}>
+    {page > 1 && <a class="blog-pagination_item" href={href(page - 1)} aria-label="Previous page">←</a>}
+    {pages.map((n) => (
+      <a
+        class:list={["blog-pagination_item", n === page && "active"]}
+        href={href(n)}
+        aria-current={n === page ? "page" : undefined}
+      >
+        {n}
+      </a>
+    ))}
+    {page < totalPages && <a class="blog-pagination_item" href={href(page + 1)} aria-label="Next page">→</a>}
+  </nav>
+)}
+
+<style is:global>
+  @layer components {
+    .blog-pagination_wrap {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+
+    .blog-pagination_item {
+      display: grid;
+      place-items: center;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      border: var(--border-width) solid var(--background-3);
+      border-radius: var(--radius-small);
+      font-size: var(--text-small);
+
+      &:hover {
+        background-color: var(--background-2);
+      }
+
+      &.active {
+        border-color: var(--dark-900);
+        background-color: var(--dark-900);
+        color: var(--light-100);
+      }
+    }
+  }
+</style>

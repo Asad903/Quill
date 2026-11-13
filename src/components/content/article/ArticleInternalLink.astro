@@ -1,0 +1,7 @@
+---
+type Props = { node: { markDef: { slug?: string } } };
+
+const { slug } = Astro.props.node.markDef;
+---
+
+{slug ? <a href={`/blog/${slug}`}><slot /></a> : <slot />}
